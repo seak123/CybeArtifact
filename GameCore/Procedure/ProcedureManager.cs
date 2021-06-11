@@ -4,8 +4,8 @@ using UnityEngine;
 
 public enum ProcedureType
 {
-    Prepare,
-    Main,
+    Login,
+    Menu,
     Battle,
 }
 
@@ -13,8 +13,19 @@ public class ProcedureManager : MonoSingleton<ProcedureManager>, IManager
 {
     private MLogger _logger = new MLogger("ProcedureManager");
     private IProcedure _curProcedure;
+    private static GameInstance _gameInstance;
     private Dictionary<ProcedureType, IProcedure> _procedures;
     
+    public static GameInstance GameInst{
+        get{
+            if(_gameInstance==null)
+            {
+                _gameInstance = new GameInstance();
+            }
+            return _gameInstance;
+        }
+    }
+
     public void Init()
     {
         _logger.Log("start init");
@@ -56,8 +67,8 @@ public class ProcedureManager : MonoSingleton<ProcedureManager>, IManager
 
     private void RegisterProcedures()
     {
-        _procedures.Add(ProcedureType.Prepare, new PrepareProcedure());
-        _procedures.Add(ProcedureType.Main, new MainProcedure());
+        _procedures.Add(ProcedureType.Login, new LoginProcedure());
+        _procedures.Add(ProcedureType.Menu, new MenuProcedure());
         _procedures.Add(ProcedureType.Battle, new BattleProcedure());
     }
 
@@ -65,11 +76,21 @@ public class ProcedureManager : MonoSingleton<ProcedureManager>, IManager
     {
         EventManager.Instance.Init();
         ResourceManager.Instance.Init();
+        LuaManager.Instance.Init();
+        LuaBehaviourManager.Instance.Init();
+        GestureManager.Instance.Init();
+        CameraManager.Instance.Init();
+        ScenesManager.Instance.Init();
     }
 
     private void UnRegisterManagers()
     {
         EventManager.Instance.Release();
         ResourceManager.Instance.Release();
+        LuaManager.Instance.Release();
+        LuaBehaviourManager.Instance.Release();
+        GestureManager.Instance.Release();
+        CameraManager.Instance.Release();
+        ScenesManager.Instance.Release();
     }
 }
